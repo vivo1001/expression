@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import './styles/FaceDetection.css'
+import '../styles/FaceDetection.css'
 import * as faceapi from 'face-api.js'
 
 const FaceDetection = ({ data, available }) => {
