@@ -1,0 +1,37 @@
+div.detection {
+	margin-top:40px;
+	display: flex;
+	justify-content: center;
+	/* -webkit-transform: scaleX(-1);
+	transform: scaleX(-1); */
+	background-color: transparent;
+	color: white;
+}
+
+video {
+	border-radius: 10px ;
+	box-shadow: 0 5px 25px rgba(192, 195, 205, 0.685);
+}
+
+canvas {
+	position: absolute;
+}
+
+/* footer  */
+
+.footer{
+    margin: 20px ;
+    margin-left: 25px;
+    padding: 20px 0px;
+    margin-right: 25px;
+    color : rgb(253, 253, 253);
+    background: #111111;
+    /* box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); */
+    backdrop-filter: blur( 12px );
+    -webkit-backdrop-filter: blur( 12px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    overflow: hidden;
+	text-align: center;
+    
+}
