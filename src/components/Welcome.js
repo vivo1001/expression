@@ -51,7 +51,7 @@ const Heading = styled.div`
   justify-content: center;
   width: 40%;
   height: 100vh;
-  background-color: rgba(55, 157, 179, 0.7);
+  background-color:#98EECC;
   border-radius: 1px;
   box-shadow: 0 8px 6px rgba(0, 0, 0, 0.4);
   z-index: 999;
@@ -98,6 +98,7 @@ const Caption = styled.div`
   font-size: 24px;
   color: white;
   font-family: "Dancing Script", cursive;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 `;
 
 const Image = styled.img`
