@@ -1,5 +1,4 @@
 const getSmiley = (emotion) => {
-  console.log("EMotion", emotion);
   switch (emotion) {
     case "happy":
       return require("../assets/happy.jpg");
@@ -49,33 +48,84 @@ const getDescription = (emotion) => {
   }
 };
 
-const getPlaylist = (emotion) => {
+//   switch (emotion) {
+//     case "happy":
+//       return require("../assets/happy.jpg");
+
+//     case "sad":
+//       return require("../assets/sad.jpg");
+
+//     case "surprised":
+//       return require("../assets/surprised.jpg");
+
+//     case "angry":
+//       return require("../assets/angry.jpg");
+
+//     case "neutral":
+//       return require("../assets/neutral.jpg");
+
+//     case "disgusted":
+//       return require("../assets/disgusted.jpg");
+
+//     default:
+//       return require("../assets/default.jpg");
+//   }
+// };
+
+const getBgVideo = (emotion) =>{
   switch (emotion) {
     case "happy":
-      return require("../assets/happy.jpg");
+      return require("../assets/happy.mp4");
 
     case "sad":
-      return require("../assets/sad.jpg");
+      return require("../assets/sad.mp4");
 
     case "surprised":
-      return require("../assets/surprised.jpg");
+      return require("../assets/surprised.mp4");
 
     case "angry":
-      return require("../assets/angry.jpg");
+      return require("../assets/angry.mp4");
 
     case "neutral":
-      return require("../assets/neutral.jpg");
+      return require("../assets/neutral.mp4");
 
     case "disgusted":
-      return require("../assets/disgusted.jpg");
+      return require("../assets/disgusted.mp4");
 
     default:
-      return require("../assets/default.jpg");
+      return require("../assets/default.mp4");
   }
-};
+}
+
+const getSongs = (emotion) =>{
+  switch (emotion) {
+    case "happy":
+      return "https://open.spotify.com/playlist/37i9dQZF1EVJSvZp5AOML2?si=c38e7c001a424373";
+
+    case "sad":
+      return "https://open.spotify.com/playlist/6xdpzgLplPEpny9Tc3PkHG?si=ed34df7c93f6442d";
+
+    case "surprised":
+      return "https://open.spotify.com/playlist/6zYTeXJXLHS0OGonG4P0wA?si=c4da80f51ff64872";
+
+    case "angry":
+      return "https://open.spotify.com/playlist/609gQW5ztNwAkKnoZplkao?si=b30802a3786f44ca";
+
+    case "neutral":
+      return "https://open.spotify.com/playlist/6HmCUFtjSTocAqBp1e3pC6?si=cd1778d2a6f74ea2";
+
+    case "disgusted":
+      return "https://open.spotify.com/album/1V3SPr45Sj8uRuAup6Dd2l?si=qiYE45L7Qjiyxgm6SjC3Iw";
+
+    default:
+      return "https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8?si=25f7db9f35844332";
+  }
+}
+
 
 export default {
   getSmiley,
   getDescription,
-  getPlaylist,
+  getBgVideo,
+  getSongs
 };

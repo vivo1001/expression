@@ -9,10 +9,12 @@ const FaceDetection = () => {
   const canvasRef = useRef();
   const [isLoading, setIsLoading] = useState(true);
   const [result, setResult] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [emotion, setEmotion] = useState("");
   const [resultExpression, setResultExpression] = useState(
-    "The model is processing. Please wait...."
+    "Click on the button please!"
   );
-  // const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [intervalId, setIntervalId] = useState(null); // New state variable
 
   const useTiny = true;
 
@@ -24,9 +26,6 @@ const FaceDetection = () => {
       await faceapi.loadFaceExpressionModel(url);
       await faceapi.loadFaceRecognitionModel(url);
       console.log("Models loaded");
-      // setTimeout(() => {
-      //   setIsLoading(false);
-      // }, 3000);
       setIsLoading(false);
     };
     loadModels();
@@ -50,50 +49,57 @@ const FaceDetection = () => {
       });
   };
 
-  // const toggleVideo = () => {
-  //   // const video = videoRef.current;
-  //   // if (!video.paused) {
-  //   //   video.pause();
-  //   // } else {
-  //   //   video.play();
-  //   // }
-  //   setIsVideoPlaying(!isVideoPlaying);
-  //   console.log("Button", isVideoPlaying);
-  // };
+  const handleDetectClick = () => {
+    // console.log("Detect",isDetecting);
+    var myVideo = document.getElementById("camera");
+    if (isDetecting) {
+      clearInterval(intervalId);
+      setIsDetecting(false);
+      setResultExpression("Click on the button please!");
+      canvasRef.current
+        .getContext("2d")
+        .clearRect(0, 0, dimensions.width, dimensions.height);
+      myVideo.pause();
+    } else {
+      setResultExpression("The model is processing. Please wait....");
+      myVideo.play();
+      const id = setInterval(detect, 1000);
+      setIntervalId(id);
+      setIsDetecting(true);
+    }
+  };
 
   const detect = async () => {
-    setInterval(async () => {
-      const detections = await faceapi
-        .detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-        .withFaceLandmarks(useTiny)
-        .withFaceExpressions()
-        .withFaceDescriptors();
+    const detections = await faceapi
+      .detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+      .withFaceLandmarks(useTiny)
+      .withFaceExpressions()
+      .withFaceDescriptors();
 
-      if (detections.length > 0) {
-        canvasRef.current
-          .getContext("2d")
-          .clearRect(0, 0, dimensions.width, dimensions.height);
+    if (detections.length > 0) {
+      canvasRef.current
+        .getContext("2d")
+        .clearRect(0, 0, dimensions.width, dimensions.height);
 
-        detections.forEach((detection) => {
-          const resizedDetections = faceapi.resizeResults(
-            detection,
-            dimensions
-          );
-          setResult(true);
-          console.log("Result", resizedDetections);
-          showDetections(resizedDetections);
-          setResultExpression(
+      detections.forEach((detection) => {
+        const resizedDetections = faceapi.resizeResults(detection, dimensions);
+        setResult(true);
+        console.log("Result", resizedDetections);
+        showDetections(resizedDetections);
+        setResultExpression(
+          `You are now ${
             resizedDetections.expressions.asSortedArray()[0].expression
-          );
-          // emotionClassifier(resizedDetections.expressions.asSortedArray()[0].expression);
-        });
-      } else {
-        canvasRef.current
-          .getContext("2d")
-          .clearRect(0, 0, dimensions.width, dimensions.height);
-        setResultExpression(null);
-      }
-    }, 2000);
+          }`
+        );
+        setEmotion(resizedDetections.expressions.asSortedArray()[0].expression);
+      });
+    } else {
+      canvasRef.current
+        .getContext("2d")
+        .clearRect(0, 0, dimensions.width, dimensions.height);
+      setResultExpression("Please show your face clearly");
+      setEmotion("");
+    }
   };
 
   const showDetections = (detection) => {
@@ -106,7 +112,9 @@ const FaceDetection = () => {
       "lineWidth: 3"
     );
     drawBox.draw(canvasRef.current);
-
+    
+    // faceapi.draw.drawDetections(canvasRef.current, resizedDetections)
+		faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections)
     faceapi.draw.drawFaceExpressions(
       canvasRef.current,
       resizedDetections,
@@ -116,60 +124,59 @@ const FaceDetection = () => {
 
   return (
     <>
-    {isLoading ? (
-      <LoadingScreen/>
-        ) : (
-          <Screen>
-      <ContainerLeft>
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <Screen>
+          <ContainerLeft>
             <Detection>
-              <Webcam autoPlay muted ref={videoRef} onPlay={detect} />
+              <Webcam id="camera" autoPlay muted ref={videoRef} />
               <Canvas ref={canvasRef} />
             </Detection>
-            {/* 
-          <Button>
-            <ToggleVideo onClick={toggleVideo}>
-              {isVideoPlaying ? "Stop Video" : "Start Video"}
-            </ToggleVideo>
-          </Button> */}
 
-            <Resultant>
-            {!result && resultExpression}
-              {result &&((resultExpression)
-                ? `Your face is now ${resultExpression}`
-                : "Please show your face clearly")}
-            </Resultant>
-      </ContainerLeft>
+            <Button onClick={handleDetectClick}>
+              {isDetecting ? "Stop" : "Start"} Detection
+            </Button>
+            <Resultant>{resultExpression}</Resultant>
+          </ContainerLeft>
 
-      <ContainerRight>
-        <h1>Mood Description</h1>
-        <Smiley
-          src={emotionClassifier.getSmiley(resultExpression)}
-        />
-        <p>
-          {emotionClassifier.getDescription(resultExpression)}
-        </p>
+          <ContainerRight>
+            <h1>Mood Description</h1>
+            <SmileyWrapper>
+              <Smiley src={emotionClassifier.getSmiley(emotion)} />
+              {emotion.toUpperCase()}
+            </SmileyWrapper>
+            <p style={{ color: "#2F0F5D", fontFamily: "Roboto, cursive" }}>
+  {emotionClassifier.getDescription(emotion)}
+</p>
 
-        {result && <>
-          <p style={{ fontWeight: 600, fontSize: 25 }}>
-          Here are some songs suited for your mood
-        </p>
-        <a href="https://open.spotify.com/playlist/3gIvkqkbZFGYgBVivMYjHu?si=fe1ed45e62b04fa6">
-          Spotify Songs
-        </a>
-        </>}
-      </ContainerRight>
 
-      <BgVideo
-        autoPlay
-        loop
-        muted
-        playsInline
-        src={require("../assets/bgVideo.mp4")}
-        className="bg-video"
-      />
-    </Screen>
-        )}
-        </>
+            {result && (
+              <>
+                <p style={{ fontWeight: 400, fontSize: 25 , fontFamily:"Roboto, cursive" }}>
+                  Here are some songs suited for your mood
+                </p>
+                <Spotify>
+                <SpotifyLogo src={require("../assets/spotify.png")}/>
+                <a href={`${emotionClassifier.getSongs(emotion)}`}>
+                  Open Spotify
+                </a>
+                </Spotify>
+              </>
+            )}
+          </ContainerRight>
+
+          <BgVideo
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={emotionClassifier.getBgVideo(emotion)}
+            className="bg-video"
+          />
+        </Screen>
+      )}
+    </>
   );
 };
 
@@ -183,8 +190,12 @@ const Screen = styled.div`
 `;
 
 const ContainerLeft = styled.div`
+  margin-top: 6vh;
   flex-direction: column;
   width: 640px;
+  display: flex;
+  align-items: center;
+
 `;
 
 const BgVideo = styled.video`
@@ -196,7 +207,6 @@ const BgVideo = styled.video`
   object-fit: cover;
   z-index: -1;
 `;
-
 
 const Detection = styled.div`
   display: flex;
@@ -223,15 +233,27 @@ const Webcam = styled.video`
 
 const Canvas = styled.canvas`
   position: absolute;
+
 `;
 
-// const Button = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: 640px;
-//   margin-top: 3vh;
-// `;
+const Button = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 6vh;
+  margin-top: 3vh;
+  border-radius: 30px;
+  font-size: 20px;
+  background-color: #ff0060;
+  color: #f6fa70;
+  border-width: 0.1;
+
+  &:active {
+    background-color: #b70404;
+    color: #f2be22;
+  }
+`;
 
 // const ToggleVideo = styled.button`
 //   width: 10vw;
@@ -251,6 +273,7 @@ const Canvas = styled.canvas`
 
 const Resultant = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   margin-top: 3vh;
@@ -262,7 +285,7 @@ const Resultant = styled.div`
 
 const ContainerRight = styled.div`
   margin-top: 6vh;
-  background-color: #c3edc0;
+  background-color: #e9ffc2;
   width: 40vw;
   height: 90vh;
   border-radius: 25px;
@@ -270,23 +293,69 @@ const ContainerRight = styled.div`
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+  flex-wrap:wrap;
 
   & > h1 {
-    color: #1a5d1a;
+    color: #2f0f5d;
     margin-top: 2vh;
     font-family: Roboto, cursive;
   }
 
   & > p {
     margin: 20px 30px;
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 17px;
+    font-weight: 200;
+    font-family: Roboto, cursive;
+    color:#2F0F5D
+  }
+
+  & > a {
+    text-decoration:none;
+    font-size:20px;
+    color:green;
+
   }
 `;
-const Smiley = styled.img`
+
+const Spotify = styled.button`
+    display:flex;
+    width: 30%;
+    background-color: #16FF00;
+    justify-content:space-evenly;
+    height:40px;
+    align-items:center;
+    border-radius:30px;
+ & > a {
+    text-decoration:none;
+    font-size:20px;
+    color:black;
+  }
+  &:active{
+    background-color:#239D60;
+  }
+`;
+
+const SpotifyLogo = styled.img`
+    width:30px;
+    height:30px;
+    border-radius:30px;
+    background-color:black;
+`;
+
+const SmileyWrapper = styled.div`
   margin-top: 5vh;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: space-evenly;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: Roboto-mono , sans-serif;
+`;
+
+const Smiley = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 120px;
-  z-index: 999;
 `;

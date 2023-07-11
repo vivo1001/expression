@@ -51,7 +51,7 @@ const Heading = styled.div`
   justify-content: center;
   width: 40%;
   height: 100vh;
-  background-color:#98EECC;
+  background-color:#97FEED;
   border-radius: 1px;
   box-shadow: 0 8px 6px rgba(0, 0, 0, 0.4);
   z-index: 999;
@@ -73,7 +73,8 @@ const WrapperContent = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  animation: ${colorAnimation} 2s linear infinite;
+  background-color:#F8FDCF;
+  ${'' /* animation: ${colorAnimation} 2s linear infinite; */}
 
   @media (max-width: 720px) {
     width: 100%;
@@ -82,10 +83,10 @@ const WrapperContent = styled.div`
 `;
 
 const Text = styled.div`
+  color:#071952;
   font-size: 60px;
   font-family: sans-serif Roboto;
   font-weight: 600;
-  color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 
   @media (max-width: 480px) {
@@ -94,9 +95,9 @@ const Text = styled.div`
 `;
 
 const Caption = styled.div`
+  color:#071952;
   margin-top: 10px;
   font-size: 24px;
-  color: white;
   font-family: "Dancing Script", cursive;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 `;
@@ -112,7 +113,7 @@ const Description = styled.div`
   font-family: sans-serif Roboto;
   font-size: 20px;
   font-weight: 400;
-  color:#03001C;
+  color:#0B666A;
 `;
 
 const Button = styled.button`
@@ -120,12 +121,12 @@ const Button = styled.button`
   width: 60%;
   height: 10vh;
   background-color: ${(props) =>
-    props.isPressed ? "rgba(55, 157, 179, 0.4)" : "rgba(55, 157, 179, 1)"};
+    props.isPressed ? "rgba(55, 157, 179, 0.4)" : "#78C1F3"};
   border-radius: 60px;
   border-width: 0;
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   font-size: 25px;
-  color: white;
+  color: #071952;
 
   @media (max-width: 720px) {
     width: 100%;
