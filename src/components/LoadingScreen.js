@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 const LoadingScreen = () => {
   useEffect(() => {
     const loader = gsap.timeline();
-    const duration = 0.05;
+    const duration = 0.125;
     const delay = 0.5;
 
     loader

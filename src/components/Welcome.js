@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import colorAnimation from "../assets/animation";
+// import colorAnimation from "../assets/animation";
 
 const Welcome = () => {
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   const buttonPress = () => {
-    setIsButtonPressed(true);
     // Delay the navigation to MainScreen for a brief moment to allow the highlight effect to be visible
     setTimeout(() => {
       window.location.href = "/Main";
@@ -31,7 +29,7 @@ const Welcome = () => {
           project can be found in Introduction.md file.
         </Description>
 
-        <Button onClick={buttonPress} isPressed={isButtonPressed}>
+        <Button onClick={() => {window.location.href = "/Main"}}>
           Proceed to Expressions
         </Button>
       </WrapperContent>
@@ -51,7 +49,7 @@ const Heading = styled.div`
   justify-content: center;
   width: 40%;
   height: 100vh;
-  background-color:#97FEED;
+  background-color:#F0E161;
   border-radius: 1px;
   box-shadow: 0 8px 6px rgba(0, 0, 0, 0.4);
   z-index: 999;
@@ -73,7 +71,7 @@ const WrapperContent = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color:#F8FDCF;
+  background-color:#FFF38C;
   ${'' /* animation: ${colorAnimation} 2s linear infinite; */}
 
   @media (max-width: 720px) {
@@ -83,9 +81,9 @@ const WrapperContent = styled.div`
 `;
 
 const Text = styled.div`
-  color:#071952;
-  font-size: 60px;
-  font-family: sans-serif Roboto;
+  color:#ffff;
+  font-size: 100px;
+  font-family:  "Tangerine";
   font-weight: 600;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 
@@ -110,22 +108,22 @@ const Image = styled.img`
 const Description = styled.div`
   width: 80%;
   margin-top: 8vh;
-  font-family: sans-serif Roboto;
+  font-family: "Poppins";
   font-size: 20px;
   font-weight: 400;
-  color:#0B666A;
+  color:black;
 `;
 
 const Button = styled.button`
   margin-top: 10vh;
   width: 60%;
   height: 10vh;
-  background-color: ${(props) =>
-    props.isPressed ? "rgba(55, 157, 179, 0.4)" : "#78C1F3"};
+  background-color:#FFF4CF;
   border-radius: 60px;
   border-width: 0;
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   font-size: 25px;
+  font-family: "Poppins";
   color: #071952;
 
   @media (max-width: 720px) {
@@ -133,7 +131,7 @@ const Button = styled.button`
   }
 
   &:active {
-    background-color: rgba(55, 157, 179, 0.4);
+    background-color: #C0B236;
   }
 `;
 
