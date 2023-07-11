@@ -112,9 +112,9 @@ const FaceDetection = () => {
       "lineWidth: 3"
     );
     drawBox.draw(canvasRef.current);
-    
+
     // faceapi.draw.drawDetections(canvasRef.current, resizedDetections)
-		faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections)
+    faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
     faceapi.draw.drawFaceExpressions(
       canvasRef.current,
       resizedDetections,
@@ -128,6 +128,10 @@ const FaceDetection = () => {
         <LoadingScreen />
       ) : (
         <Screen>
+        <LogoWrapper>
+        <Text>Expressions</Text>
+        <Caption>Capture your face</Caption>
+        </LogoWrapper>
           <ContainerLeft>
             <Detection>
               <Webcam id="camera" autoPlay muted ref={videoRef} />
@@ -140,6 +144,8 @@ const FaceDetection = () => {
             <Resultant>{resultExpression}</Resultant>
           </ContainerLeft>
 
+            {isDetecting && result && (
+              <>
           <ContainerRight>
             <h1>Mood Description</h1>
             <SmileyWrapper>
@@ -147,24 +153,21 @@ const FaceDetection = () => {
               {emotion.toUpperCase()}
             </SmileyWrapper>
             <p style={{ color: "#2F0F5D", fontFamily: "Roboto, cursive" }}>
-  {emotionClassifier.getDescription(emotion)}
-</p>
+              {emotionClassifier.getDescription(emotion)}
+            </p>
 
-
-            {result && (
-              <>
-                <p style={{ fontWeight: 400, fontSize: 25 , fontFamily:"Roboto, cursive" }}>
+                <SpotifyText>
                   Here are some songs suited for your mood
-                </p>
+                </SpotifyText>
                 <Spotify>
-                <SpotifyLogo src={require("../assets/spotify.png")}/>
-                <a href={`${emotionClassifier.getSongs(emotion)}`}>
-                  Open Spotify
-                </a>
+                  <SpotifyLogo src={require("../assets/spotify.png")} />
+                  <a href={`${emotionClassifier.getSongs(emotion)}`}>
+                    Open Spotify
+                  </a>
                 </Spotify>
+          </ContainerRight>
               </>
             )}
-          </ContainerRight>
 
           <BgVideo
             autoPlay
@@ -187,7 +190,54 @@ const Screen = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+
+  @media (max-width: 980px) {
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
 `;
+
+const LogoWrapper = styled.div`
+ display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+  height: 100vh;
+  background-color:#FBD85D;
+  border-radius: 1px;
+  box-shadow: 0 8px 6px rgba(0, 0, 0, 0.4);
+  z-index: 999;
+
+  @media (max-width: 720px) {
+    display:flex;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 480px) {
+    display:flex;
+    font-size: 40px;
+  }
+`;
+const Text = styled.div`
+  color:#146C94;
+  font-size: 60px;
+  font-family: Roboto , cursive;
+  font-weight: 600;
+  @media (max-width: 480px) {
+    font-size: 30px;
+  }
+`;
+
+const Caption = styled.div`
+  color:#071952;
+  margin-top: 10px;
+  font-size: 24px;
+  font-family: "Dancing Script", cursive;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+`;
+
 
 const ContainerLeft = styled.div`
   margin-top: 6vh;
@@ -196,6 +246,9 @@ const ContainerLeft = styled.div`
   display: flex;
   align-items: center;
 
+  @media (max-width: 720px) {
+    width: 350px;
+  }
 `;
 
 const BgVideo = styled.video`
@@ -229,11 +282,23 @@ const Webcam = styled.video`
   border-radius: 10px;
   border-color: black;
   border-width: 1;
+  box-shadow: 8px 8px 6px rgba(0, 0, 0, 0.4);
+
+  @media (max-width: 720px) {
+    width: 350px;
+    height: 262px;
+    border-radius: 30px;
+  }
 `;
 
 const Canvas = styled.canvas`
   position: absolute;
 
+  @media(max-width:720px){
+
+  width: 350px;
+  height: 262px;
+  }
 `;
 
 const Button = styled.button`
@@ -252,6 +317,11 @@ const Button = styled.button`
   &:active {
     background-color: #b70404;
     color: #f2be22;
+  }
+
+  @media (max-width: 720px) {
+    width: 40%;
+    font-size: 15px;
   }
 `;
 
@@ -281,19 +351,24 @@ const Resultant = styled.div`
   background-color: #e9ffc2;
   height: 10vh;
   border-radius: 50px;
+
+  @media (max-width: 720px) {
+    font-size: 18px;
+    height: 5vh;
+  }
 `;
 
 const ContainerRight = styled.div`
   margin-top: 6vh;
   background-color: #e9ffc2;
   width: 40vw;
-  height: 90vh;
+  margin-left:50px;
   border-radius: 25px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  flex-wrap:wrap;
+    flex-wrap:wrap;
 
   & > h1 {
     color: #2f0f5d;
@@ -306,40 +381,23 @@ const ContainerRight = styled.div`
     font-size: 17px;
     font-weight: 200;
     font-family: Roboto, cursive;
-    color:#2F0F5D
+    color: #2f0f5d;
+
+    @media (max-width: 720px) {
+      font-size: 15px;
+    }
   }
 
   & > a {
-    text-decoration:none;
-    font-size:20px;
-    color:green;
-
+    text-decoration: none;
+    font-size: 20px;
+    color: green;
   }
-`;
-
-const Spotify = styled.button`
-    display:flex;
-    width: 30%;
-    background-color: #16FF00;
-    justify-content:space-evenly;
-    height:40px;
-    align-items:center;
-    border-radius:30px;
- & > a {
-    text-decoration:none;
-    font-size:20px;
-    color:black;
+  @media (max-width: 980px) {
+    width: 80%;
+    margin-left:0;
+    margin-bottom:20px;
   }
-  &:active{
-    background-color:#239D60;
-  }
-`;
-
-const SpotifyLogo = styled.img`
-    width:30px;
-    height:30px;
-    border-radius:30px;
-    background-color:black;
 `;
 
 const SmileyWrapper = styled.div`
@@ -349,13 +407,81 @@ const SmileyWrapper = styled.div`
   align-items: center;
   width: 50%;
   justify-content: space-evenly;
-  font-size: 20px;
+  font-size: 25px;
+  color:#2f0f5d;
   font-weight: 600;
-  font-family: Roboto-mono , sans-serif;
+  font-family: Roboto, cursive;
+
+  @media(max-width:720px){
+      width:60%;
+      font-size:15px;
+  }
 `;
 
 const Smiley = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 120px;
+
+  @media(max-width:720px){
+    width:80px;
+    height:80px;
+    border-radius:80px;
+  }
+`;
+
+const SpotifyText = styled.div`
+  font-weight: 400;
+  font-size: 25px;
+  font-family: Roboto, cursive;
+  color:#2f0f5d;
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  @media(max-width:720px){
+    font-size:15px;
+  }
+
+`;
+
+const Spotify = styled.button`
+  display: flex;
+  width: 30%;
+  background-color: #16ff00;
+  justify-content: space-evenly;
+  height: 40px;
+  align-items: center;
+  border-radius: 30px;
+  margin-bottom:20px;
+  & > a {
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+
+    @media (max-width: 720px) {
+      font-size: 15px;
+    }
+  }
+
+  &:active {
+    background-color: #239d60;
+  }
+
+  @media (max-width: 720px) {
+    width:40%;
+  }
+`;
+
+const SpotifyLogo = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+
+  @media (max-width: 720px) {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+  }
 `;
