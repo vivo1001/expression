@@ -1,6 +1,5 @@
 import FaceDetection from './components/FaceDetection';
 import Welcome from './components/Welcome'
-import './styles/App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
