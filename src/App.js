@@ -7,7 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/expression" element={<Welcome />} />
-        <Route path="Main" element={<FaceDetection />} />
+        <Route path="/Main" element={<FaceDetection />} />
       </Routes>
     </BrowserRouter>
   );
